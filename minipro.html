@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Currency Converter</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 30px #0005;
+        }
+
+        h1 {
+            text-align: center;
+            color: #243b55;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 8px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            margin-top: 22px;
+            background: #087f5b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #066548;
+        }
+
+        .result {
+            margin-top: 22px;
+            padding: 18px;
+            background: #e8f7ef;
+            border-radius: 10px;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        #output {
+            font-size: 25px;
+            color: #087f5b;
+            font-weight: bold;
+        }
+
+        #status {
+            font-size: 13px;
+            color: #666;
+            margin-top: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>💱 Currency Converter</h1>
+    <p class="subtitle">Convert Indian Rupees into World Currencies</p>
+
+    <label for="amount">Amount in Indian Rupees (₹)</label>
+    <input type="number" id="amount" value="1000" min="0"
+           step="any" placeholder="Enter amount">
+
+    <label for="currency">Select Other Currency</label>
+    <select id="currency">
+        <option value="USD">🇺🇸 US Dollar (USD)</option>
+        <option value="EUR">🇪🇺 Euro (EUR)</option>
+        <option value="GBP">🇬🇧 British Pound (GBP)</option>
+        <option value="JPY">🇯🇵 Japanese Yen (JPY)</option>
+        <option value="AUD">🇦🇺 Australian Dollar (AUD)</option>
+        <option value="CAD">🇨🇦 Canadian Dollar (CAD)</option>
+        <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
+        <option value="AED">🇦🇪 UAE Dirham (AED)</option>
+        <option value="SAR">🇸🇦 Saudi Riyal (SAR)</option>
+        <option value="SGD">🇸🇬 Singapore Dollar (SGD)</option>
+        <option value="CHF">🇨🇭 Swiss Franc (CHF)</option>
+        <option value="NZD">🇳🇿 New Zealand Dollar (NZD)</option>
+        <option value="PKR">🇵🇰 Pakistani Rupee (PKR)</option>
+        <option value="BDT">🇧🇩 Bangladeshi Taka (BDT)</option>
+        <option value="LKR">🇱🇰 Sri Lankan Rupee (LKR)</option>
+        <option value="NPR">🇳🇵 Nepalese Rupee (NPR)</option>
+        <option value="THB">🇹🇭 Thai Baht (THB)</option>
+        <option value="MYR">🇲🇾 Malaysian Ringgit (MYR)</option>
+        <option value="IDR">🇮🇩 Indonesian Rupiah (IDR)</option>
+        <option value="KRW">🇰🇷 South Korean Won (KRW)</option>
+        <option value="HKD">🇭🇰 Hong Kong Dollar (HKD)</option>
+        <option value="QAR">🇶🇦 Qatari Riyal (QAR)</option>
+        <option value="KWD">🇰🇼 Kuwaiti Dinar (KWD)</option>
+        <option value="OMR">🇴🇲 Omani Rial (OMR)</option>
+        <option value="ZAR">🇿🇦 South African Rand (ZAR)</option>
+        <option value="EGP">🇪🇬 Egyptian Pound (EGP)</option>
+        <option value="TRY">🇹🇷 Turkish Lira (TRY)</option>
+        <option value="RUB">🇷🇺 Russian Ruble (RUB)</option>
+        <option value="BRL">🇧🇷 Brazilian Real (BRL)</option>
+        <option value="MXN">🇲🇽 Mexican Peso (MXN)</option>
+        <option value="PHP">🇵🇭 Philippine Peso (PHP)</option>
+        <option value="VND">🇻🇳 Vietnamese Dong (VND)</option>
+        <option value="SEK">🇸🇪 Swedish Krona (SEK)</option>
+        <option value="NOK">🇳🇴 Norwegian Krone (NOK)</option>
+        <option value="DKK">🇩🇰 Danish Krone (DKK)</option>
+        <option value="KES">🇰🇪 Kenyan Shilling (KES)</option>
+        <option value="NGN">🇳🇬 Nigerian Naira (NGN)</option>
+    </select>
+
+    <button onclick="convertCurrency()">Convert Currency</button>
+
+    <div class="result">
+        <p>Converted Amount</p>
+        <div id="output">--</div>
+        <p id="rate"></p>
+    </div>
+
+    <p id="status">Internet connection required for live rates.</p>
+</div>
+
+<script>
+    async function convertCurrency() {
+        const amount = Number(document.getElementById("amount").value);
+        const currency = document.getElementById("currency").value;
+        const output = document.getElementById("output");
+        const rateText = document.getElementById("rate");
+        const status = document.getElementById("status");
+
+        if (document.getElementById("amount").value === "" ||
+            !Number.isFinite(amount) || amount < 0) {
+            output.textContent = "--";
+            rateText.textContent = "";
+            status.textContent = "Please enter a valid amount.";
+            return;
+        }
+
+        output.textContent = "Loading...";
+        status.textContent = "Getting latest available exchange rate...";
+
+        try {
+            const url =
+                "https://open.er-api.com/v6/latest/INR";
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error("Network error");
+            }
+
+            const data = await response.json();
+
+            if (data.result !== "success" ||
+                !data.rates[currency]) {
+                throw new Error("Rate unavailable");
+            }
+
+            const exchangeRate = data.rates[currency];
+            const convertedAmount = amount * exchangeRate;
+
+            output.textContent =
+                new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: currency,
+                    maximumFractionDigits: 2
+                }).format(convertedAmount);
+
+            rateText.textContent =
+                "1 INR = " + exchangeRate.toFixed(6) +
+                " " + currency;
+
+            status.textContent =
+                "Rate date: " + data.time_last_update_utc +
+                " | Rates may change.";
+
+        } catch (error) {
+            output.textContent = "--";
+            rateText.textContent = "";
+            status.textContent =
+                "Unable to get rates. Check your internet and try again.";
+        }
+    }
+
+    convertCurrency();
+</script>
+
+</body>
+</html>
